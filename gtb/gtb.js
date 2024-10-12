@@ -61,12 +61,46 @@ let updateClue = () => {
     }
     
 }
+let solve = (clue) => {
+    console.log(clue);
+    clue=clue.split('');
+    let possible = wordlist.join(',').split(',').filter(a=>
+        a.split('').every((a,i)=>
+            (clue[i]=="_"&&a!=" ")||a==clue[i]
+        )&&a.length==clue.length
+    )
+    accepted.innerHTML=possible.join(",");
+}
+let paused = true;
+let timer = 0;
+let timerCount = 0;
+let startTimer = () => {
+    paused = false;
+    timer = 0;
+    timerCount++;
+    tickTimer();
+}
+let stopTimer = () => {
+    paused = true;
+}
+let tickTimer = () => {
+    if (timerCount > 1 || paused) {
+        timerCount--;
+        return;
+    }
+    timerDisplay.innerText = timer;
+    timer++;
+    setTimeout(tickTimer, 1000);
+}
+let revealed = 0;
 random.onclick = () => {
     selected = list[Math.floor(Math.random() * list.length)];
     clue=selected.replace(/[^ ]/g, "_")
     listmode = listMode.checked;
-    updateClue();
     result.innerHTML = "";
+    revealed = 0;
+    updateClue();
+    startTimer();
 };
 reveal.onclick = () => {
     let n = Math.floor(Math.random() * clue.split("").reduce((a,b)=>a+(b=="_"),0));
@@ -80,7 +114,9 @@ reveal.onclick = () => {
             n--;
         }
     }
+    revealed++;
     updateClue();
+    startTimer();
 }
 revealRest.onclick = () => {
     accepted.innerHTML=listmodeAnswers.join(", ");
@@ -99,15 +135,27 @@ allon.onclick = () => {
 }
 form.addEventListener("submit", (e) => {
     e.preventDefault();
-    if (!listmode){
-        result.innerHTML = guess.value == selected ? "you got it!" : "nope, try again :(";
+    if (solverMode.checked) {
+        solve(guess.value);
+    }
+    else if (!listmode){
+        if (guess.value == selected) {
+            result.innerHTML = "you got it!";
+            stopTimer();
+        }else{
+            result.innerHTML = "nope, try again :(";
+        }
+        
     }
     else{
         if(listmodeAnswers.includes(guess.value)&&!listmodeAccepted.includes(guess.value)){
             listmodeAccepted.push(guess.value);
             accepted.innerHTML=listmodeAccepted.join(", ");
             fraction.innerHTML = listmodeAccepted.length + "/" + listmodeAnswers.length;
-
+            if (listmodeAccepted.length == listmodeAnswers.length) {
+                result.innerHTML = "you got em all!";
+                stopTimer();
+            }
         }
     }
     guess.value = "";
