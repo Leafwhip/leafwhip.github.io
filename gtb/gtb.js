@@ -101,6 +101,7 @@ random.onclick = () => {
     revealed = 0;
     updateClue();
     startTimer();
+    reveal.disabled=false;
 };
 reveal.onclick = () => {
     let n = Math.floor(Math.random() * clue.split("").reduce((a,b)=>a+(b=="_"),0));
@@ -145,10 +146,15 @@ form.addEventListener("submit", (e) => {
         }else{
             result.innerHTML = "nope, try again :(";
         }
-        
     }
     else{
-        if(listmodeAnswers.includes(guess.value)&&!listmodeAccepted.includes(guess.value)){
+        if(guess.value.split("").includes("_")){
+            clue=guess.value;
+            allon.click();
+            updateClue();
+            reveal.disabled=true;
+        }
+        else if(listmodeAnswers.includes(guess.value)&&!listmodeAccepted.includes(guess.value)){
             listmodeAccepted.push(guess.value);
             accepted.innerHTML=listmodeAccepted.join(", ");
             fraction.innerHTML = listmodeAccepted.length + "/" + listmodeAnswers.length;
