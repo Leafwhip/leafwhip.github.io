@@ -49,6 +49,9 @@ let updateClue = () => {
                     if(clue[j]!="_"&&clue[j]!=list[i][j]){
                         match = false;
                     }
+                    if(clue[j]=="_"&&list[i][j]==" "){
+                        match=false;
+                    }
                 }
                 if(match){
                     listmodeAnswers.push(list[i]);
