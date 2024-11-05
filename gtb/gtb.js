@@ -47,7 +47,7 @@ let updateClue = () => {
                 let match = true;
                 for(let j=0;j<clue.length;j++){
                     if(clue[j]!="_"&&clue[j]!=list[i][j]){
-                        match = false;
+                        match=false;
                     }
                     if(clue[j]=="_"&&list[i][j]==" "){
                         match=false;
@@ -124,6 +124,9 @@ reveal.onclick = () => {
 }
 revealRest.onclick = () => {
     accepted.innerHTML=listmodeAnswers.join(", ");
+}
+revealMissed.onclick = () => {
+    accepted.innerHTML=listmodeAnswers.filter(a=>!listmodeAccepted.includes(a)).join(", ");
 }
 alloff.onclick = () => {
     for(let box of wordboxList) {
