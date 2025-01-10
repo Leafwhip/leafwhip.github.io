@@ -13,7 +13,7 @@ let wordlist = [
     'transportation',
     'bow tie,hot dog,hot tub,ice age,jet ski,the end,tin can,top hat',
     'air horn,bed wars,bus stop,car wash,ice cube,pet shop,zip line',
-    'bunk bed,chef hat,corn dog,hard hat,lady bug,mail box,name tag',
+    'bunk bed,chef hat,corn dog,hard hat,mail box,name tag',
     'eye patch,ice cream,ice spike,log cabin,red panda',
     'bald head,bike path,bird bath,bird cage,bird nest,dead tree,door knob,fast food,fish bowl,gold mine,gold ring,golf ball,golf cart,golf club,hair band,hula hoop,jump rope,lamp post,lava lamp,lock pick,mini golf,palm tree,pine tree,quad bike,rain coat,rock band,stop sign,tree frog',
     'apple pie,first aid,magic hat,milky way,mouse pad,party hat,trash can,witch hut',
