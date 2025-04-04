@@ -100,6 +100,10 @@ random.onclick = () => {
     selected = list[Math.floor(Math.random() * list.length)];
     clue=selected.replace(/[^ ]/g, "_")
     listmode = listMode.checked;
+    if(!listmode){
+        accepted.innerText="";
+        fraction.innerText="";
+    }
     result.innerHTML = "";
     revealed = 0;
     updateClue();
@@ -142,6 +146,12 @@ allon.onclick = () => {
 }
 form.addEventListener("submit", (e) => {
     e.preventDefault();
+    if(guess.value==""){
+        reveal.click();
+    }
+    if(guess.value=="r"){
+        random.click();
+    }
     if (solverMode.checked) {
         solve(guess.value);
     }
