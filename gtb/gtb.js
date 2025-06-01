@@ -7,6 +7,7 @@ for(let i=0;i<wordlist.length;i++){
     box.class="wordbox";
     box.dataset.id=i;
     container.innerHTML=wordlist[i].split(',')[0].split(' ').map(a=>a.length).join(' ');
+    box.dataId=container.innerHTML;
     container.append(box);
     wordboxContainer.append(container);
     wordboxList.push(box);
@@ -58,7 +59,12 @@ let updateClue = () => {
                 }
             }
         }
-        fraction.innerHTML = "0/" + listmodeAnswers.length;
+        if(hideFraction.checked){
+            fraction.innerHTML = "";
+        }
+        else{
+            fraction.innerHTML = "0/" + listmodeAnswers.length;
+        }
         accepted.innerHTML="";
         listmodeAccepted=[];
     }
@@ -74,33 +80,38 @@ let solve = (clue) => {
     )
     accepted.innerHTML=possible.join(",");
 }
-let paused = true;
 let timer = 0;
 let timerCount = 0;
+let pause = true;
 let startTimer = () => {
-    paused = false;
-    timer = 0;
-    timerCount++;
-    tickTimer();
-}
-let stopTimer = () => {
-    paused = true;
+    pause = false;
+    timer = performance.now();
+    timerDisplay.innerText = "";
+    timerCount = 0;
+    setTimeout(tickTimer, 1000);
 }
 let tickTimer = () => {
-    if (timerCount > 1 || paused) {
-        timerCount--;
+    if(pause){
         return;
     }
-    timerDisplay.innerText = timer;
-    timer++;
+    timerCount++;
+    timerDisplay.innerText = timerCount;
     setTimeout(tickTimer, 1000);
+}
+let stopTimer = () => {
+    pause = true;
+    timeDiff = Math.round(performance.now() - timer)/1000;
+    timerDisplay.innerText = timeDiff;
 }
 let revealed = 0;
 random.onclick = () => {
     selected = list[Math.floor(Math.random() * list.length)];
     clue=selected.replace(/[^ ]/g, "_")
     listmode = listMode.checked;
-    if(!listmode){
+    if(listmode){
+        listmodeAccepted=""
+    }
+    else{
         accepted.innerText="";
         fraction.innerText="";
     }
@@ -109,6 +120,13 @@ random.onclick = () => {
     updateClue();
     startTimer();
     reveal.disabled=false;
+
+    if(instantReveal.value){
+        let n = parseInt(instantReveal.value);
+        for(let i=0;i<n;i++){
+            reveal.click();
+        }
+    }
 };
 reveal.onclick = () => {
     let n = Math.floor(Math.random() * clue.split("").reduce((a,b)=>a+(b=="_"),0));
@@ -144,6 +162,17 @@ allon.onclick = () => {
     }
     updateWordList();
 }
+multion.onclick = () => {
+    for(let box of wordboxList) {
+        if(box.dataId.split(" ").length>1){
+            box.checked=true;
+        }
+        else{
+            box.checked=false;
+        }
+    }
+    updateWordList();
+}
 form.addEventListener("submit", (e) => {
     e.preventDefault();
     if(guess.value==""){
@@ -173,7 +202,9 @@ form.addEventListener("submit", (e) => {
         else if(listmodeAnswers.includes(guess.value)&&!listmodeAccepted.includes(guess.value)){
             listmodeAccepted.push(guess.value);
             accepted.innerHTML=listmodeAccepted.join(", ");
-            fraction.innerHTML = listmodeAccepted.length + "/" + listmodeAnswers.length;
+            if(!hideFraction.checked){
+                fraction.innerHTML = listmodeAccepted.length + "/" + listmodeAnswers.length;
+            }
             if (listmodeAccepted.length == listmodeAnswers.length) {
                 result.innerHTML = "you got em all!";
                 stopTimer();
